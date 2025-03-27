@@ -27,18 +27,17 @@ class AddProductView(generic.CreateView):
         print(form.cleaned_data)
         return super(AddProductView, self).form_valid(form=form)
 
-# class SearchProductsView(generic.ListView):
-#     template_name = 'basket/products_list.html'
-#     context_object_name = 'products'
-#
-#     def get_queryset(self):
-#         return models.ProductList.objects.filter(title__icontains=self.request.GET.get('q'))
-#
-#     def get_context_data(self,*,object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['product'] = self.get_queryset()
-#         context['q'] = self.request.GET.get('q')
-#         return context
+class SearchProductsView(generic.ListView):
+    template_name = 'basket/products_list.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        return models.ProductList.objects.filter(title__icontains=self.request.GET.get('q'))
+
+    def get_context_data(self,*,object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['q'] = self.request.GET.get('q')
+        return context
 
 # read list/detail
 # def products_list(request):

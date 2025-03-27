@@ -17,6 +17,12 @@
  <div class="container mt-4">
      <h1 class="text-center">Список задач</h1>
      <div class="list-group">
+
+         <form action="{% url 'search_product' %}" method="get">
+             <input type="search" name="q" placeholder="Введите чтобы найти заказ" class="form-control me-2">
+             <button type="submit" class="btn btn-primary">Поиск</button>
+         </form>
+
          {% for i in products %}
              <div class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
                  <div>
