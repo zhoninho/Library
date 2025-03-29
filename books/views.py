@@ -3,6 +3,9 @@ from django.http import HttpResponse
 from datetime import datetime
 from . import models
 from django.views import generic
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
+from django.core.cache import cache
 
 class SearchBookView(generic.ListView):
     template_name = 'books_list.html'
@@ -17,27 +20,25 @@ class SearchBookView(generic.ListView):
         return context
 
 #get id
-def books_detail(request, id):
-    if request.method == 'GET':
-        books_id = get_object_or_404(models.Books, id=id)
-        return render(
-            request,
-            template_name='book_detail.html',
-            context={
-                'books_id': books_id,
-            }
-        )
+class BooksDetailView(generic.DetailView):
+    model = models.Books
+    template_name = 'book_detail.html'
+    context_object_name = 'books_id'
 
+    def get_object(self):
+        return get_object_or_404(models.Books, id=self.kwargs['id'])
 
 #list
-def books_list(request):
-    if request.method == 'GET':
-        query = models.Books.objects.all()
-        return render(
-            request,
-            template_name='books_list.html',
-            context={
-                'query': query,
-            }
-        )
+@method_decorator(cache_page(60*15), name='dispatch')
+class BooksListView(generic.ListView):
+     model = models.Books
+     template_name = 'books_list.html'
+     context_object_name = 'query'
+
+     def get_queryset(self):
+         books = cache.get('query')
+         if not books:
+             books = self.model.objects.all()
+             cache.set('query', books)
+         return books
 
