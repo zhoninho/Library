@@ -11,6 +11,14 @@ class RezkaFilmListView(generic.ListView):
     def get_queryset(self):
         return models.RezkaFilmsModel.objects.all()
 
+class NebKgBookListView(generic.ListView):
+    template_name = 'parser/neb_kg_book_list.html'
+    context_object_name = 'neb_kg'
+    model = models.NebKgBooksModel
+
+    def get_queryset(self):
+        return models.NebKgBooksModel.objects.all()
+
 class ParserForm(generic.FormView):
     template_name = 'parser/parser_form.html'
     form_class = forms.ParserForm
